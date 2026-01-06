@@ -1,11 +1,21 @@
 package com.example.to_do
 
+import android.graphics.Paint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +33,7 @@ import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.to_do.components.AddTaskDialog
+import com.example.to_do.components.AnimatedTaskItem
 import com.example.to_do.components.TaskCard
 import com.example.to_do.data.Task
 import com.example.to_do.view.TaskViewModel
@@ -36,13 +47,15 @@ fun MainScreen(viewModel: TaskViewModel) {
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showDialog = true },
-                modifier = Modifier.padding(16.dp)
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
-                    painter = painterResource(id = android.R.drawable.ic_input_add),
+                    Icons.Default.Add,
                     contentDescription = "Add Task"
                 )
             }
@@ -78,15 +91,20 @@ fun MainScreen(viewModel: TaskViewModel) {
 }
 
 @Composable
-fun TaskList(tasks: List<Task>, onCompleteTask: (Task) -> Unit) {
+fun TaskList(
+    tasks: List<Task>,
+    onCompleteTask: (Task) -> Unit
+) {
     LazyColumn(
-        contentPadding = PaddingValues(vertical = 8.dp)
+        contentPadding = PaddingValues(vertical = 20.dp)
     ) {
-        items(items = tasks, key = { it.id }) { task ->
-            TaskCard(
+        items(
+            items = tasks,
+            key = { it.id }
+        ) { task ->
+            AnimatedTaskItem(
                 task = task,
-                onComplete = { onCompleteTask(task) },
-                modifier = Modifier.animateItem()
+                onCompleteTask = onCompleteTask,
             )
         }
     }
@@ -94,13 +112,29 @@ fun TaskList(tasks: List<Task>, onCompleteTask: (Task) -> Unit) {
 
 @Composable
 fun EmptyState() {
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Icon(
+            imageVector = Icons.Outlined.Favorite,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(72.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
-            text = "No tasks yet. Tap + to create one!",
-            style = MaterialTheme.typography.bodyLarge
+            text = "No tasks yet",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Text(
+            text = "Tap + to add your first task",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

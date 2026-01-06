@@ -4,17 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import com.example.to_do.data.TaskDatabase
 import com.example.to_do.data.TaskRepository
-import com.example.to_do.ui.theme.To_DoTheme
+import com.example.to_do.ui.theme.ToDoTheme
 import com.example.to_do.view.TaskViewModel
 import com.example.to_do.view.TaskViewModelFactory
 
@@ -37,26 +30,10 @@ class MainActivity : ComponentActivity() {
         taskViewModel = ViewModelProvider(this, taskViewModelFactory).get(TaskViewModel::class.java)
 
         setContent {
-            To_DoTheme {
+            ToDoTheme {
                 // 4. Provide the ViewModel to the MainScreen
                 MainScreen(viewModel = taskViewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    To_DoTheme {
-        Greeting("Android")
     }
 }
