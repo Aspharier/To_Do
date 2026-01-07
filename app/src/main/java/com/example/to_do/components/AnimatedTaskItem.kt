@@ -13,7 +13,8 @@ import com.example.to_do.data.Task
 @Composable
 fun AnimatedTaskItem(
     task: Task,
-    onCompleteTask: (Task) -> Unit
+    onCompleteTask: (Task) -> Unit,
+    onDeleteTask: (Task) -> Unit
 ) {
     AnimatedVisibility(
         visible = true,
@@ -30,6 +31,7 @@ fun AnimatedTaskItem(
         TaskCard(
             task = task,
             onComplete = { onCompleteTask(task) },
+            onDelete = { onDeleteTask(task) },
             modifier = Modifier.animateContentSize()
         )
     }

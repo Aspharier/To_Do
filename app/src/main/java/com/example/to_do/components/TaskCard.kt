@@ -53,23 +53,25 @@ import kotlinx.coroutines.delay
 fun TaskCard(
     task: Task,
     onComplete: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptic = LocalHapticFeedback.current
-    var visible by remember { mutableStateOf(true) }
-    var isCompleted by remember { mutableStateOf(false) }
+    var isDismissed by remember { mutableStateOf(false) }
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
             when(value) {
                 SwipeToDismissBoxValue.StartToEnd -> {
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    isCompleted = !isCompleted
+                    if(!task.isCompleted) {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        onComplete()
+                    }
                     false
                 }
                 SwipeToDismissBoxValue.EndToStart -> {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    visible = false
+                    isDismissed = true
                     true
                 }
                 else -> false
@@ -78,7 +80,7 @@ fun TaskCard(
     )
 
     AnimatedVisibility(
-        visible = visible,
+        visible = !isDismissed,
         exit = fadeOut(tween(200)) + slideOutVertically(
             targetOffsetY = { -it / 2 },
             animationSpec = tween(200)
@@ -87,7 +89,7 @@ fun TaskCard(
     ) {
         SwipeToDismissBox(
             state = dismissState,
-            enableDismissFromStartToEnd = true,
+            enableDismissFromStartToEnd = !task.isCompleted,
             enableDismissFromEndToStart = true,
             backgroundContent = {
 //            val color = when (dismissState.targetValue) {
@@ -96,44 +98,40 @@ fun TaskCard(
 //            }
                 val icon: ImageVector?
                 val alignment: Alignment
-                val bgColor: Color
-                val iconColor: Color
+                val backgroundColor: Color
+                val iconTint: Color
 
                 when(dismissState.targetValue) {
                     SwipeToDismissBoxValue.StartToEnd -> {
                         icon = Icons.Default.Check
                         alignment = Alignment.CenterStart
-                        bgColor = MaterialTheme.colorScheme.primaryContainer
-                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        backgroundColor = MaterialTheme.colorScheme.primaryContainer
+                        iconTint = MaterialTheme.colorScheme.onPrimaryContainer
                     }
                     SwipeToDismissBoxValue.EndToStart -> {
                         icon = Icons.Default.Delete
                         alignment = Alignment.CenterEnd
-                        bgColor = MaterialTheme.colorScheme.errorContainer
-                        iconColor = MaterialTheme.colorScheme.onErrorContainer
+                        backgroundColor = MaterialTheme.colorScheme.errorContainer
+                        iconTint = MaterialTheme.colorScheme.onErrorContainer
                     }
 
                     else -> {
-                        icon = null
-                        alignment = Alignment.Center
-                        bgColor = Color.Transparent
-                        iconColor = Color.Transparent
+                        return@SwipeToDismissBox
                     }
                 }
 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(backgroundColor)
                         .padding(horizontal = 24.dp),
                     contentAlignment = alignment
                 ) {
-                    icon?.let {
-                        Icon(
-                            imageVector = it,
-                            contentDescription = null,
-                            tint = iconColor
-                        )
-                    }
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint
+                    )
                 }
             }
         ) {
@@ -148,10 +146,10 @@ fun TaskCard(
                     text = task.description,
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        textDecoration = if(isCompleted){
+                        textDecoration = if(task.isCompleted){
                             TextDecoration.LineThrough
                         } else TextDecoration.None,
-                        color = if(isCompleted) {
+                        color = if(task.isCompleted) {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         } else
                             MaterialTheme.colorScheme.onSurface
@@ -161,10 +159,10 @@ fun TaskCard(
         }
     }
 
-    LaunchedEffect(visible) {
-        if(!visible) {
-            delay(200)
-            onComplete()
+    LaunchedEffect(isDismissed) {
+        if(isDismissed) {
+            delay(300)
+            onDelete()
         }
     }
 }

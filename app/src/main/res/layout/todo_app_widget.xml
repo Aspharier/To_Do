@@ -1,22 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp"
+    android:padding="16dp"
     android:background="@drawable/app_widget_background">
 
-    <TextView
-        android:id="@+id/widget_title"
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/widget_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My Tasks"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:paddingBottom="8dp"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
+        <TextView
+            android:id="@+id/appwidget_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="My List"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+<!--        &lt;!&ndash; This button will open the main app &ndash;&gt;-->
+<!--        <ImageButton-->
+<!--            android:id="@+id/widget_open_app_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="?android:attr/selectableItemBackgroundBorderless"-->
+<!--            android:src="@android:drawable/ic_menu_edit" /> &lt;!&ndash; Placeholder Icon &ndash;&gt;-->
+    </LinearLayout>
+
+    <!-- Task List -->
     <ListView
-        android:id="@+id/widget_task_list"
+        android:id="@+id/widget_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/transparent" />
+        android:layout_marginTop="8dp"
+        tools:listitem="@layout/widget_task_item" />
+
+    <!-- Empty View: Shown when the list is empty -->
+    <TextView
+        android:id="@+id/widget_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No tasks yet!"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
 </LinearLayout>

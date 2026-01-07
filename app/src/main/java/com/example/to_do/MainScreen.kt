@@ -43,7 +43,7 @@ import com.example.to_do.view.TaskViewModel
 
 @Composable
 fun MainScreen(viewModel: TaskViewModel) {
-    val tasks by viewModel.tasks.collectAsState()
+    val tasks by viewModel.allTasks.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -74,6 +74,9 @@ fun MainScreen(viewModel: TaskViewModel) {
                     tasks = tasks,
                     onCompleteTask = { task ->
                         viewModel.completeTask(task)
+                    },
+                    onDeleteTask = { task ->
+                        viewModel.deleteTask(task)
                     }
                 )
             }
@@ -93,7 +96,8 @@ fun MainScreen(viewModel: TaskViewModel) {
 @Composable
 fun TaskList(
     tasks: List<Task>,
-    onCompleteTask: (Task) -> Unit
+    onCompleteTask: (Task) -> Unit,
+    onDeleteTask: (Task) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 20.dp)
@@ -104,7 +108,8 @@ fun TaskList(
         ) { task ->
             AnimatedTaskItem(
                 task = task,
-                onCompleteTask = onCompleteTask,
+                onCompleteTask = { onCompleteTask(task) },
+                onDeleteTask = { onDeleteTask(task) }
             )
         }
     }
