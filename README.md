@@ -19,4 +19,4 @@ A simple To-Do-List Application made with Kotlin. Create widget to never forgot 
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/Aspharier/CryptoTracker.git
+git clone https://github.com/Aspharier/To_Do.git
