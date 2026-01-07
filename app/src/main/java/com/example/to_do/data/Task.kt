@@ -10,5 +10,6 @@ data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val description: String,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val isCompleted: Boolean = false
 )

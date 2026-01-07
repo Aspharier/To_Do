@@ -15,4 +15,18 @@ class TaskRepository(private val taskDao: TaskDao) {
     suspend fun delete(task: Task) {
         taskDao.deleteTask(task)
     }
+
+    // For Widget
+    fun getTaskForWidget(): List<Task> {
+        return taskDao.getAllTasksOnce()
+    }
+
+    fun toggleTaskCompleted(taskId: Long) {
+        val task = taskDao.getAllTasksOnce().firstOrNull { it.id.toLong() == taskId }
+        task?.let {
+            taskDao.updateTask(
+                it.copy(isCompleted = !it.isCompleted)
+            )
+        }
+    }
 }

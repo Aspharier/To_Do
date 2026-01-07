@@ -27,7 +27,7 @@ class TaskViewModel(private val repository: TaskRepository): ViewModel() {
     fun addTask(description: String) {
         if(description.isNotBlank()) {
             viewModelScope.launch {
-                repository.insert(Task(description = description))
+                repository.insert(Task(description = description,))
             }
         }
     }
