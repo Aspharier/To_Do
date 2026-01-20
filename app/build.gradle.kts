@@ -7,13 +7,11 @@ plugins {
 
 android {
     namespace = "com.example.to_do"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.to_do"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -53,6 +51,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.androidx.navigation.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,18 +62,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Room for local database
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
-    // To use kotlin symbol processing (KSP) for Room
-    ksp("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-
-    // ViewModel for state management
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
-
-    // For observing StateFlow from ViewModel
-    implementation("androidx.compose.runtime:runtime-livedata:1.10.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
+    // Lifecycle & ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
 }

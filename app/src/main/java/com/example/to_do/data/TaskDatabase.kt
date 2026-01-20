@@ -8,9 +8,10 @@ import androidx.room.RoomDatabase
 // This is the main access point to the database. It should be a singleton to prevent multiple instances
 // of the database begin open at the same time.
 
-@Database(entities = [Task::class], version = 1, exportSchema = false)
+@Database(entities = [Task::class, Habit::class, HabitCompletion::class], version = 2, exportSchema = false)
 abstract class TaskDatabase: RoomDatabase() {
     abstract fun taskDao(): TaskDao
+    abstract fun habitDao(): HabitDao
 
     companion object {
         @Volatile
@@ -22,7 +23,9 @@ abstract class TaskDatabase: RoomDatabase() {
                     context.applicationContext,
                     TaskDatabase::class.java,
                     "task_database"
-                ).build()
+                )
+                .fallbackToDestructiveMigration() // For simplicity in this exercise, we destroy the old database. In a real app, use migrations.
+                .build()
                 INSTANCE = instance
                 instance
             }
