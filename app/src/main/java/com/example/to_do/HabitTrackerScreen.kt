@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.to_do.data.Habit
 import com.example.to_do.data.HabitCompletion
 import com.example.to_do.view.HabitViewModel
@@ -32,20 +33,57 @@ import java.util.*
 @Composable
 fun HabitTrackerScreen(viewModel: HabitViewModel) {
     val habits by viewModel.allHabits.collectAsState()
+    val totalStreaks by viewModel.totalStreaks.collectAsState()
     var showAddHabitDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = { Text("Habit Tracker") },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+            TopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Habit Tracker",
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = (-0.5).sp
+                            )
+                        )
+//                        Row(
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            modifier = Modifier
+//                                .padding(horizontal = 12.dp, vertical = 4.dp)
+//                        ) {
+//                            Text(
+//                                text = totalStreaks.toString(),
+//                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+//                                color = MaterialTheme.colorScheme.primary
+//                            )
+//                            Spacer(modifier = Modifier.width(4.dp))
+//                            Text(
+//                                text = "🔥",
+//                                fontSize = 20.sp
+//                            )
+//                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAddHabitDialog = true }) {
+            FloatingActionButton(
+                onClick = { showAddHabitDialog = true },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                shape = MaterialTheme.shapes.large
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Habit")
             }
         }
@@ -63,6 +101,9 @@ fun HabitTrackerScreen(viewModel: HabitViewModel) {
                 ) {
                     items(habits) { habit ->
                         HabitCard(habit, viewModel)
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(80.dp)) // Spacer for floating nav bar
                     }
                 }
             }
@@ -83,7 +124,7 @@ fun HabitTrackerScreen(viewModel: HabitViewModel) {
 @Composable
 fun HabitCard(habit: Habit, viewModel: HabitViewModel) {
     val completions by viewModel.getCompletionsForHabit(habit.id).collectAsState(initial = emptyList())
-    var isExpanded by remember { mutableStateOf(true) }
+    var isExpanded by remember { mutableStateOf(false) }
     val currentMonth = YearMonth.now()
     
     Card(

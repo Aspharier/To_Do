@@ -14,6 +14,9 @@ interface HabitDao {
     @Delete
     suspend fun deleteHabit(habit: Habit)
 
+    @Query("SELECT * FROM habit_completions")
+    fun getAllCompletions(): Flow<List<HabitCompletion>>
+
     @Query("SELECT * FROM habit_completions WHERE habitId = :habitId")
     fun getCompletionsForHabit(habitId: Long): Flow<List<HabitCompletion>>
 

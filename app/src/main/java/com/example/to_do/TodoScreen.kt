@@ -45,7 +45,8 @@ fun TodoScreen(viewModel: TaskViewModel) {
             FloatingActionButton(
                 onClick = { showDialog = true },
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 80.dp) // Move up to avoid overlap with floating nav
             ) {
                 Icon(
                     Icons.Default.Add,
@@ -93,7 +94,7 @@ fun TaskList(
     onDeleteTask: (Task) -> Unit
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(vertical = 20.dp)
+        contentPadding = PaddingValues(top = 20.dp, bottom = 100.dp) // Added bottom padding for floating nav
     ) {
         items(
             items = tasks,
