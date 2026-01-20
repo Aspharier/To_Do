@@ -3,8 +3,10 @@ package com.example.to_do
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -37,39 +39,21 @@ fun HabitTrackerScreen(viewModel: HabitViewModel) {
     var showAddHabitDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
                 title = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Column {
                         Text(
                             text = "Habit Tracker",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontWeight = FontWeight.ExtraBold,
-                                letterSpacing = (-0.5).sp
-                            )
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
                         )
-//                        Row(
-//                            verticalAlignment = Alignment.CenterVertically,
-//                            modifier = Modifier
-//                                .padding(horizontal = 12.dp, vertical = 4.dp)
-//                        ) {
-//                            Text(
-//                                text = totalStreaks.toString(),
-//                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-//                                color = MaterialTheme.colorScheme.primary
-//                            )
-//                            Spacer(modifier = Modifier.width(4.dp))
-//                            Text(
-//                                text = "🔥",
-//                                fontSize = 20.sp
-//                            )
-//                        }
+//                        Text(
+//                            text = "$totalStreaks day streak \uD83D\uDD25",
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = MaterialTheme.colorScheme.onSurfaceVariant
+//                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -80,30 +64,33 @@ fun HabitTrackerScreen(viewModel: HabitViewModel) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showAddHabitDialog = true },
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                shape = MaterialTheme.shapes.large
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 80.dp),
+                shape = CircleShape
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Habit")
             }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Box (
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
             if (habits.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No habits yet. Start one!", style = MaterialTheme.typography.bodyLarge)
-                }
+                EmptyHabitState()
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 16.dp,
+                        bottom = 100.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(habits) { habit ->
                         HabitCard(habit, viewModel)
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(80.dp)) // Spacer for floating nav bar
                     }
                 }
             }
@@ -118,6 +105,29 @@ fun HabitTrackerScreen(viewModel: HabitViewModel) {
                 }
             )
         }
+    }
+}
+
+@Composable
+fun EmptyHabitState() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "No habits yet",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Tap + to start building habits",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -146,7 +156,7 @@ fun HabitCard(habit: Habit, viewModel: HabitViewModel) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "${completions.size}🔥  ${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
+                        text = "${completions.size} 🔥  ${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
